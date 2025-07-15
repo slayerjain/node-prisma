@@ -81,6 +81,57 @@ While the application is running in record mode:
 2. Keploy will automatically capture the requests and responses
 3. Test cases will be generated in the `keploy/` directory
 
+
+
+## Usage Examples
+
+### Create a new todo with relationships:
+```bash
+curl -X POST http://localhost:8080/api/todos \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Learn Advanced Prisma",
+    "description": "Master complex Prisma operations",
+    "priority": "HIGH",
+    "userId": 1,
+    "categoryId": 3,
+    "tagIds": [1, 7, 9],
+    "notes": ["Initial plan", "Reference docs: prisma.io"],
+    "dependencies": [2, 3]
+  }'
+```
+
+### Get todos with filtering and pagination:
+```bash
+curl "http://localhost:8080/api/todos?page=1&limit=5&completed=false&priority=HIGH&category=1&tag=2&search=prisma"
+```
+
+### Update a todo with relationship changes:
+```bash
+curl -X PUT http://localhost:8080/api/todos/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Master Prisma ORM",
+    "completed": true,
+    "priority": "HIGH",
+    "tagIds": [4, 5],
+    "notes": ["Made significant progress"],
+    "removeTags": [2],
+    "dependencies": [3],
+    "removeDependencies": [4]
+  }'
+```
+
+### Toggle completion status with impact analysis:
+```bash
+curl -X PATCH http://localhost:8080/api/todos/3/toggle
+```
+
+### Delete todo with cascade effect:
+```bash
+curl -X DELETE http://localhost:8080/api/todos/2
+```
+
 ### Replaying Test Cases
 
 To validate your application against the recorded test cases:
@@ -268,55 +319,6 @@ Each API endpoint now performs multiple database operations (10+ queries per req
    - Offset-based pagination
    - Default sorting with override options
    - Count totals for pagination controls
-
-## Advanced Usage Examples
-
-### Create a new todo with relationships:
-```bash
-curl -X POST http://localhost:8080/api/todos \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Learn Advanced Prisma",
-    "description": "Master complex Prisma operations",
-    "priority": "HIGH",
-    "userId": 1,
-    "categoryId": 3,
-    "tagIds": [1, 7, 9],
-    "notes": ["Initial plan", "Reference docs: prisma.io"],
-    "dependencies": [2, 3]
-  }'
-```
-
-### Get todos with filtering and pagination:
-```bash
-curl "http://localhost:8080/api/todos?page=1&limit=5&completed=false&priority=HIGH&category=1&tag=2&search=prisma"
-```
-
-### Update a todo with relationship changes:
-```bash
-curl -X PUT http://localhost:8080/api/todos/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Master Prisma ORM",
-    "completed": true,
-    "priority": "HIGH",
-    "tagIds": [4, 5],
-    "notes": ["Made significant progress"],
-    "removeTags": [2],
-    "dependencies": [3],
-    "removeDependencies": [4]
-  }'
-```
-
-### Toggle completion status with impact analysis:
-```bash
-curl -X PATCH http://localhost:8080/api/todos/3/toggle
-```
-
-### Delete todo with cascade effect:
-```bash
-curl -X DELETE http://localhost:8080/api/todos/2
-```
 
 ## Available Scripts
 
