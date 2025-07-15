@@ -62,6 +62,50 @@ npm start
 
 The server will start on the port specified in your `.env` file (default: 8080) or automatically find an available port if there's a conflict.
 
+
+## Testing with Keploy
+
+[Keploy](https://keploy.io) is an API testing platform that can record and replay API test cases. This project is set up to work with Keploy for automated testing.
+
+### Recording Test Cases
+
+To record API interactions as test cases:
+
+```bash
+# Start the recording mode with your application
+keploy record -c "npm start"
+```
+
+While the application is running in record mode:
+1. Make API calls to the endpoints you want to test
+2. Keploy will automatically capture the requests and responses
+3. Test cases will be generated in the `keploy/` directory
+
+### Replaying Test Cases
+
+To validate your application against the recorded test cases:
+
+```bash
+# Run tests based on the recorded test cases
+keploy test -c "npm start"
+```
+
+Keploy will:
+1. Start your application
+2. Replay the recorded API calls
+3. Compare the responses with the expected responses
+4. Generate a test report
+
+### Benefits of Keploy Testing
+
+- No need to write manual test cases for API endpoints
+- Automatic regression testing
+- Captures real-world API interactions
+- Validates both request handling and response generation
+- Ensures database operations continue to work as expected
+
+Test reports are available in the `keploy/reports/` directory after test runs.
+
 ### 4. Monitor Prisma queries (optional)
 
 The server is configured to log all Prisma queries, which helps with debugging complex operations:
@@ -490,49 +534,6 @@ If you encounter transaction errors, ensure that:
 1. All relationships exist before referencing them
 2. There are no circular dependencies
 3. The database connection has enough available connections for transactions
-
-## Testing with Keploy
-
-[Keploy](https://keploy.io) is an API testing platform that can record and replay API test cases. This project is set up to work with Keploy for automated testing.
-
-### Recording Test Cases
-
-To record API interactions as test cases:
-
-```bash
-# Start the recording mode with your application
-keploy record -c "npm start"
-```
-
-While the application is running in record mode:
-1. Make API calls to the endpoints you want to test
-2. Keploy will automatically capture the requests and responses
-3. Test cases will be generated in the `keploy/` directory
-
-### Replaying Test Cases
-
-To validate your application against the recorded test cases:
-
-```bash
-# Run tests based on the recorded test cases
-keploy test -c "npm start"
-```
-
-Keploy will:
-1. Start your application
-2. Replay the recorded API calls
-3. Compare the responses with the expected responses
-4. Generate a test report
-
-### Benefits of Keploy Testing
-
-- No need to write manual test cases for API endpoints
-- Automatic regression testing
-- Captures real-world API interactions
-- Validates both request handling and response generation
-- Ensures database operations continue to work as expected
-
-Test reports are available in the `keploy/reports/` directory after test runs.
 
 ## Conclusion
 
