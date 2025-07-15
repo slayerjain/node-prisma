@@ -1,0 +1,7 @@
+preScript: ""
+postScript: ""
+template: {}
+mockRegistry:
+    mock: 3f51df447110e58c9564b480a7ba381a1b87c17dad13f6b3e9515ce0292c0305
+    app: node-prisma
+metadata: {}

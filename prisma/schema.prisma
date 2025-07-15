@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Todo {
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String?
+  completed     Boolean        @default(false)
+  priority      Priority       @default(MEDIUM)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  userId        Int?
+  categoryId    Int?
+  tags          TagsOnTodos[]
+  notes         Note[]
+  history       TodoHistory[]
+  attachments   Attachment[]
+  dependencies  Todo[]         @relation("TodoDependencies")
+  dependencyOf  Todo[]         @relation("TodoDependencies")
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  user          User?          @relation(fields: [userId], references: [id])
+  
+  @@map("todos")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  todos         Todo[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  @@map("users")
+}
+
+model Category {
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String?
+  todos         Todo[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  @@map("categories")
+}
+
+model Tag {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  todos         TagsOnTodos[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  @@map("tags")
+}
+
+model TagsOnTodos {
+  todoId        Int
+  tagId         Int
+  assignedAt    DateTime       @default(now())
+  todo          Todo           @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  tag           Tag            @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@id([todoId, tagId])
+  @@map("tags_on_todos")
+}
+
+model Note {
+  id            Int            @id @default(autoincrement())
+  content       String
+  todoId        Int
+  todo          Todo           @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  @@map("notes")
+}
+
+model TodoHistory {
+  id            Int            @id @default(autoincrement())
+  todoId        Int
+  todo          Todo           @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  action        String
+  description   String
+  createdAt     DateTime       @default(now())
+  
+  @@map("todo_history")
+}
+
+model Attachment {
+  id            Int            @id @default(autoincrement())
+  filename      String
+  filepath      String
+  mimeType      String
+  todoId        Int
+  todo          Todo           @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  
+  @@map("attachments")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
